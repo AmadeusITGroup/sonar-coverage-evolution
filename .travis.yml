@@ -9,5 +9,23 @@ matrix:
 sudo: false
 dist: trusty
 
+addons:
+  sonarcloud:
+    organization: "1a"
+    token:
+      secure: "KFe/zbpLb0qFliqgZvhpmW+okGxNbYrh1A4AiKKrXGwvxiNkFjwGlSJBIrb1Szm/LmP2BI44pP6sL09pcn8HBD95IHcFr93SpkZSWRbmhZR8Q76dRNH3FiN1/jYoqIOpcswEq9fQ0AKUAvgarLmz+QcYsQgWj1XRo4sEdFYRN5z955dNlmegVEJV9T8+eUesP5xfwk7MeYMHv40Mollk3yqpfX2wI0Def/5ByDN2q4yhlZQ1Vx6GUxsPtjIsGp8mwpAXx8cbeyrMTDFbLnN7FJBjzmtMjdAK+gTFpHE2NukQkMCgR6IgdYhEGvWSOpZfHtCmNKK2lWRyuxsvcHObhEuYSlaO7q6QnXXKz9gVKrIRuAAfdgaujFxWF1ElWBnX9rCmICOO2Xo2mpFFgHg0e/PSV0uqiA+YdJdAD75NUSJoK8o52HQmSs2174L8cyuXS7JVcBCnOXwfyNdZnyFwTN1/2frPzoTFcgKKPajr+G+4LrA46WRdGDdmbVO+1+H0+oP+KMSuFcOjTFYFAoo8ENwZNQOw69e79eFtcLXnUhtKrxqVcuxKO2yCbPRssCfw+iKvs51UNe/21MOGBbNM1T+MpsmVHpYflzYOzGBBLATJ6HDFZScV0OQCU/347n51hKUXM30JMXH69+0cnbF0Yym/6Bb/KTUpXsjc4g/fVUc="
+      # SONAR_TOKEN as is (/!\ no VAR= /!\)
+
+    # Activating comments on PRs
+    github_token:
+      secure: "XJdfnyy6W0cwuQqHU9cJFflHrGLNzFWM7o2yPK58cIcolKC6dyX2Yq0Z0Q07/r0arlcOIgQ/Kj+IC3idBAUJ08zNLr2p1eEuAQaX4imWa4jqDnqeHZngBJf235Ds3WMgfxhfNHHfbQELAQolUCAeNhlM6AC0/izzVvbipBCfnLiw/JxF3Qiq3GSejXt+Sno6DyYWNfbdkRqELPV1KID6G4YcuKm90DRTeRJcprnXn6fLV/NDMwfqRMDStyWarK5+h480DW9saT0/GX4r0XzyM65FQFq74krHV3gg+OpJR+6OLVUVh3F27npfv0tE8q4X4ezzzp2u0Cj29GpkDym7LqztpNyuV+pDsuLZeeh3Q67K9RP+DemlSGyWKmxMCINPi3GqOdLvDlPwVPSZSKaYlLuxbrj4+58sCWrxMAOJnO2ySP7k2qXmnOcdxchrJreu6exkbknRqeeLRe6rwKGRrA6M1o9wioHd1fQbNaz0l33WdPBo4YLJBwyANrLgoIywbEzQ6UmS2+wv8BGvS71T233kwrrgg9OBSiecoRDOEmfxK7rTswgloulre+z36SxBxhk1OfVzkDVF4864E31fqU4kqhib1jVKoPYanYKXRjiJ8djuXAdT4mDu0iEDnXiBUABo0aRlg5+Qs8u+parczShZtUAudH9oRVYxTTmBrd4="
+
+    # By default only master...
+    branches:
+      - master
+
+script:
+  - ./.travis/runSonarQubeAnalysis.sh
+
 notifications:
   email: false
