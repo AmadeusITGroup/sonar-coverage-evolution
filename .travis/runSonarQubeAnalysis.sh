@@ -20,7 +20,7 @@ fi
 
 # And run the analysis
 # It assumes that the project uses Maven and has a POM at the root of the repo
-if [ "${TRAVIS_BRANCH}" = "trunk" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+if [ "${TRAVIS_BRANCH}" = "master" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 	# => This will run a full analysis of the project and push results to the SonarQube server.
 	#
 	# Analysis is done only on master so that build of branches don't push analyses to the same project and therefore "pollute" the results
