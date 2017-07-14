@@ -36,14 +36,14 @@ public class CoverageRule implements RulesDefinition {
       repo.setName("Coverage evolution");
 
       repo.createRule(decreasingLineCoverageRule)
-          .setName("Coverage on files should not decrease")
-          .setMarkdownDescription("Reports if the coverage on a file has decreased.")
+          .setName("Line-coverage on files should not decrease")
+          .setMarkdownDescription("Reports if the line-coverage on a file has decreased.")
           .setTags("bad-practice")
           .setSeverity(Severity.BLOCKER)
       ;
       repo.createRule(decreasingOverallLineCoverageRule)
-          .setName("Project-wide coverage should not decrease")
-          .setMarkdownDescription("Reports if the coverage on the project has decreased.")
+          .setName("Project-wide line-coverage should not decrease")
+          .setMarkdownDescription("Reports if the line-coverage on the project has decreased.")
           .setTags("bad-practice")
           .setSeverity(Severity.BLOCKER)
       ;
