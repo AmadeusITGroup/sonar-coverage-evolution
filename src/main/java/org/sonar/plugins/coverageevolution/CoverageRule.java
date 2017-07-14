@@ -27,9 +27,6 @@ public class CoverageRule implements RulesDefinition {
 
   @Override
   public void define(Context context) {
-    for (ExtendedRepository repo : context.repositories()) {
-      System.out.println("Repo: " + repo.key() + " " + repo.language());
-    }
     for (Language language : languages.all()) {
       NewRepository repo = context
           .createRepository(getRepositoryName(language.getKey()), language.getKey());
