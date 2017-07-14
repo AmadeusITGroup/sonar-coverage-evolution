@@ -6,12 +6,6 @@ matrix:
     - jdk: oraclejdk8
     - jdk: openjdk8
 
-install:
-  - mvn dependency:go-offline
-
-script:
-  - mvn --offline test package
-
 sudo: false
 dist: trusty
 
