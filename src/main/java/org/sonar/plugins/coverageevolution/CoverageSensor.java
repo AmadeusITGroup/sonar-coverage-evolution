@@ -149,7 +149,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
   @Override
   public String toString() {
-    return "Stash Plugin Coverage Sensor";
+    return "Stash CoveragePlugin Coverage Sensor";
   }
 
   @Override

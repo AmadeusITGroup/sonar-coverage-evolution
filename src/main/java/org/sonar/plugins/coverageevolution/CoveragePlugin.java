@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.sonar.api.SonarPlugin;
 
-public class Plugin extends SonarPlugin {
+public class CoveragePlugin extends SonarPlugin {
 
   @Override
   public List getExtensions() {
