@@ -4,15 +4,10 @@ import org.junit.Test;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.wsclient.Sonar;
-import org.sonar.wsclient.base.HttpException;
-import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,72 +36,6 @@ public class CoverageUtilsTest {
 
     // not a wanted case but it works with current implementation (so good future exception test)
     assertEquals(200, calculateCoverage(100, -100), DELTA);
-  }
-
-  @Test
-  public void testCreateSonarClient3params() {
-
-    String URL = "";
-    String login = "";
-    String pass = "";
-
-    CoverageConfiguration config = mock(CoverageConfiguration.class);
-    doReturn(URL).when(config).url();
-    doReturn(login).when(config).login();
-    doReturn(pass).when(config).password();
-
-    assertNotNull(CoverageUtils.createSonarClient(config));
-  }
-
-  @Test
-  public void testCreateSonarClient1param() {
-
-    String URL = "";
-    String login = null;
-    String pass = "";
-
-    CoverageConfiguration config = mock(CoverageConfiguration.class);
-    doReturn(URL).when(config).url();
-    doReturn(login).when(config).login();
-    doReturn(pass).when(config).password();
-
-    assertNotNull(CoverageUtils.createSonarClient(config));
-  }
-
-  @Test
-  public void testGetLineCoverageExceptionAndNull() {
-
-    String component = "mini-me";
-    Sonar client = mock(Sonar.class);
-
-    when(client.find(any())).thenThrow(new HttpException("UT for the win !", 1337));
-
-    assertNull(CoverageUtils.getLineCoverage(client, component));
-  }
-
-  @Test
-  public void testGetLineCoverageValue() {
-
-    String component = "mini-me";
-    Sonar client = mock(Sonar.class);
-
-    // From the inside out:
-    // 1) we define the value we are interested in
-    Measure mes = new Measure();
-    mes.setMetricKey(CoreMetrics.LINE_COVERAGE_KEY);
-    mes.setValue(1337.0);
-
-    // 2) we store this value inside the resource
-    List<Measure> measures = new ArrayList();
-    measures.add(mes);
-
-    Resource res = new Resource();
-    res.setMeasures(measures);
-
-    // 3) we make sure this resource gets returned by the find() call
-    doReturn(res).when(client).find(any());
-
-    assertEquals(1337.0, CoverageUtils.getLineCoverage(client, component), DELTA);
   }
 
   @Test

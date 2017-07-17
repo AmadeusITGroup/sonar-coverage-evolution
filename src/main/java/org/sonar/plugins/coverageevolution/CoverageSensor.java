@@ -1,9 +1,7 @@
 package org.sonar.plugins.coverageevolution;
 
 import static org.sonar.plugins.coverageevolution.CoverageUtils.calculateCoverage;
-import static org.sonar.plugins.coverageevolution.CoverageUtils.createSonarClient;
 import static org.sonar.plugins.coverageevolution.CoverageUtils.formatPercentage;
-import static org.sonar.plugins.coverageevolution.CoverageUtils.getLineCoverage;
 import static org.sonar.plugins.coverageevolution.CoverageUtils.roundedPercentageGreaterThan;
 
 import java.text.MessageFormat;
@@ -24,7 +22,6 @@ import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.wsclient.Sonar;
 
 // We have to execute after all coverage sensors, otherwise we are not able to read their measurements
 @Phase(name = Phase.Name.POST)
@@ -51,7 +48,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
   @Override
   public void analyse(Project module, SensorContext context) {
-    Sonar sonar = createSonarClient(config);
+    SonarClient sonar = new SonarClient(config.url(), config.login(), config.password());
 
     for (InputFile f : fileSystem.inputFiles(fileSystem.predicates().all())) {
       Integer linesToCover = null;
@@ -72,7 +69,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
       // get lines_to_cover, uncovered_lines
       if ((linesToCover != null) && (uncoveredLines != null)) {
-        Double previousCoverage = getLineCoverage(sonar, fileResource.getEffectiveKey());
+        Double previousCoverage = sonar.getMeasureValue(fileResource, CoreMetrics.LINE_COVERAGE);
 
         double coverage = calculateCoverage(linesToCover, uncoveredLines);
 
@@ -94,7 +91,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
     // We assume the root module is always the last module, so that the overall data is correct
     if (module.isRoot()) {
-      Double previousProjectCoverage = getLineCoverage(sonar, module.getEffectiveKey());
+      Double previousProjectCoverage = sonar.getMeasureValue(module, CoreMetrics.LINE_COVERAGE);
       Double projectCoverage = coverageProjectStore.getProjectCoverage();
       LOGGER.debug("Previous/current project-wide coverage: {} / {}", previousProjectCoverage,
           projectCoverage);

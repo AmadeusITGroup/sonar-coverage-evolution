@@ -6,11 +6,6 @@ import java.text.DecimalFormatSymbols;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.rule.ActiveRules;
-import org.sonar.api.measures.CoreMetrics;
-import org.sonar.wsclient.Sonar;
-import org.sonar.wsclient.base.HttpException;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 public final class CoverageUtils {
 
@@ -26,34 +21,6 @@ public final class CoverageUtils {
     }
 
     return (1 - (((double) uncoveredLines) / linesToCover)) * MAX_PERCENTAGE;
-  }
-
-  public static Sonar createSonarClient(CoverageConfiguration config) {
-    String url = config.url();
-    String login = config.login();
-    String password = config.password();
-    if (login != null) {
-      return Sonar.create(url, login, password);
-    } else {
-      return Sonar.create(url);
-    }
-  }
-
-  public static Double getLineCoverage(Sonar client, String component) {
-    Resource resource = null;
-    try {
-      resource = client
-          .find(ResourceQuery.createForMetrics(component, CoreMetrics.LINE_COVERAGE_KEY));
-    } catch (HttpException e) {
-      LOGGER.error("Could not fetch previous coverage for component {}", component, e);
-    }
-    // It would be worth checking if the call to get the resource is able to return null.
-    //    Otherwise, we can transfer this "return null" statement in the catch and save an if.
-    if (resource == null) {
-      return null;
-    } else {
-      return resource.getMeasureValue(CoreMetrics.LINE_COVERAGE_KEY);
-    }
   }
 
   public static boolean shouldExecuteCoverage(CoverageConfiguration config,
