@@ -6,7 +6,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>sonar-plugin</packaging>
   <description>Report coverage delta on preview scans</description>
-  <name>Stash</name>
+  <name>Coverage Evolution</name>
   <url>https://github.com/AmadeusITGroup/sonar-coverage-evolution</url>
   
   <licenses>

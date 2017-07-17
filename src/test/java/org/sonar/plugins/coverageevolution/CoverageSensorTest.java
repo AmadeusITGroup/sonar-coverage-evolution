@@ -39,7 +39,7 @@ public class CoverageSensorTest {
 
   @Test
   public void testToString() {
-    assertEquals("Stash CoveragePlugin Coverage Sensor", CoSe.toString());
+    assertEquals("Coverage Evolution Sensor", CoSe.toString());
   }
 
   @Test
