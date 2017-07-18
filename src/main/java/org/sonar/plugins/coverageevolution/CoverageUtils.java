@@ -6,7 +6,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 
@@ -24,24 +23,6 @@ public final class CoverageUtils {
     }
 
     return (1 - (((double) uncoveredLines) / linesToCover)) * MAX_PERCENTAGE;
-  }
-
-  public static boolean shouldExecuteCoverage(CoverageConfiguration config,
-      ActiveRules activeRules) {
-    // We only execute when run in preview mode
-    // I don't know how we should behave during a normal scan
-
-    if (!CoverageRule.shouldExecute(activeRules)) {
-      return false;
-    }
-
-    if (!config.scanAllFiles()) {
-      LOGGER.warn(
-          "Not scanning all files, coverage features will be unreliable and will be disabled");
-      return false;
-    }
-
-    return true;
   }
 
   public static String formatPercentage(double d) {

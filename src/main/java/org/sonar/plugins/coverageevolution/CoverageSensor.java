@@ -160,6 +160,19 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
   @Override
   public boolean shouldExecuteOnProject(Project project) {
-    return CoverageUtils.shouldExecuteCoverage(config, activeRules);
+    // We only execute when run in preview mode
+    // I don't know how we should behave during a normal scan
+
+    if (!CoverageRule.shouldExecute(activeRules)) {
+      return false;
+    }
+
+    if (!config.scanAllFiles()) {
+      LOGGER.warn(
+          "Not scanning all files, coverage features will be unreliable and will be disabled");
+      return false;
+    }
+
+    return true;
   }
 }
