@@ -22,7 +22,6 @@ import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.plugins.coverageevolution.client.DefaultSonarClient;
 import org.sonar.plugins.coverageevolution.client.SonarClient;
 
 // We have to execute after all coverage sensors, otherwise we are not able to read their measurements

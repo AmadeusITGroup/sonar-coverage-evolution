@@ -11,11 +11,9 @@ import org.sonar.api.resources.Resource;
 
 public final class CoverageUtils {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoverageUtils.class);
   public static final int MAX_PERCENTAGE = 100;
 
-  private CoverageUtils() {
-  }
+  private CoverageUtils() {}
 
   public static double calculateCoverage(int linesToCover, int uncoveredLines) {
     if (linesToCover == 0) {
