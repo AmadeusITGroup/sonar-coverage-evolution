@@ -4,8 +4,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 
