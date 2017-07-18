@@ -82,7 +82,8 @@ public class CoverageSensor implements Sensor, BatchComponent {
         // The API returns the coverage rounded.
         // So we can only report anything if the rounded value has changed,
         // otherwise we could report false positives.
-        LOGGER.debug("Previous/current file coverage: {} / {}", previousCoverage, coverage);
+        LOGGER.debug("Previous/current file coverage on: {} / {}",
+            fileResource.getPath(), previousCoverage, coverage);
         if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
           addIssue(f, coverage, previousCoverage);
         }

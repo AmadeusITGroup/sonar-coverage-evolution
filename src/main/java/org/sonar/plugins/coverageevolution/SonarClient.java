@@ -62,9 +62,9 @@ public class SonarClient {
       return extractMeasure(response, metric);
     } catch (IOException | DeserializationException e) {
       LOG.error("Could not fetch measure {} for {}: {}",
-      metric.getKey(), resource.getEffectiveKey(), e.getMessage(), e);
+          metric.getKey(), resource.getEffectiveKey(), e.getMessage(), e);
+      return Optional.empty();
     }
-    return Optional.empty();
   }
 
   protected static <G extends Serializable> Optional<String> extractMeasure(JsonObject apiResult, Metric<G> metric) {
