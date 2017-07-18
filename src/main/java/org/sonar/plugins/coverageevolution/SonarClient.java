@@ -48,6 +48,7 @@ public class SonarClient {
               "&" +
               "metricKeys=" + encodeUrlPathComponent(metric.getKey())
       );
+      LOG.debug("Fetching {}", apiUrl);
       HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
       connection.setRequestProperty("Accept", "application/json");
       Optional<String> authHeader = makeAuthHeader(login, password);

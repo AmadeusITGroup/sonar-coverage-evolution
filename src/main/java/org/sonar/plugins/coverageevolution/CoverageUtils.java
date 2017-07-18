@@ -44,7 +44,7 @@ public final class CoverageUtils {
     return true;
   }
 
-    public static String formatPercentage(double d) {
+  public static String formatPercentage(double d) {
 
     // Defining that our percentage is precise down to 0.1%
     DecimalFormat df = new DecimalFormat("0.0");
@@ -63,10 +63,10 @@ public final class CoverageUtils {
     return (left > right) && !formatPercentage(left).equals(formatPercentage(right));
   }
 
+  // SQ 6.x does not provide the effectiveKey anymore directly for files
+  // It is still provided for modules, which makes the following code work for files and modules
+  // for both SQ 5.x and 6.x
   public static String computeEffectiveKey(Resource resource, Project module) {
-    // FIXME resource == module?
-    // do not depend on module.?
-    // use the resource id
     return Optional.ofNullable(resource.getEffectiveKey())
         .orElseGet(() -> module.getKey() + ":" + resource.getKey());
   }
