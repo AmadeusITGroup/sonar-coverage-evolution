@@ -50,6 +50,8 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
   @Override
   public void analyse(Project module, SensorContext context) {
+    boolean rootModuleAnalysed = false;
+
     for (InputFile file : fileSystem.inputFiles(fileSystem.predicates().all())) {
       analyseFile(module, context, file);
     }
@@ -57,6 +59,15 @@ public class CoverageSensor implements Sensor, BatchComponent {
     // We assume the root module is always the last module, so that the overall data is correct
     if (module.isRoot()) {
       analyseRootProject(module);
+      rootModuleAnalysed = true;
+    } else {
+      if (rootModuleAnalysed) {
+        LOGGER.error(
+            "The root module has not been analysed at last. " +
+            "The project-wide coverage will be wrong. " +
+            "Please open a ticket."
+        );
+      }
     }
   }
 
