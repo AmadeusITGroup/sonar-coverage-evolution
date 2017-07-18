@@ -75,7 +75,7 @@ public class CoverageRule implements RulesDefinition {
   }
 
   public static boolean shouldExecute(ActiveRules rules) {
-    return rules.findAll().stream().anyMatch((rule) ->
+    return rules.findAll().stream().anyMatch(rule ->
         isOurRepository(rule.ruleKey())
     );
   }

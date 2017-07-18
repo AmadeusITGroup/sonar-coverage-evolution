@@ -78,12 +78,12 @@ public class SonarClient {
     }
     return measures.stream()
         .map(o -> (JsonObject) o)
-        .filter(o -> {
-          return metric.getKey().equals(o.getString("metric"));
-        })
-        .map(o -> {
-          return o.getString("value");
-        })
+        .filter(o ->
+          metric.getKey().equals(o.getString("metric"))
+        )
+        .map(o ->
+          o.getString("value")
+        )
         .findFirst();
 
   }
@@ -93,12 +93,10 @@ public class SonarClient {
       return Optional.empty();
     }
 
-    if (password == null) {
-      password = "";
-    }
-
     return Optional.of("Basic " + Base64.getEncoder().encodeToString(
-        (login + ":" + password).getBytes(StandardCharsets.ISO_8859_1)
+        (
+            login + ":" + (password == null ? "" : password)
+        ).getBytes(StandardCharsets.ISO_8859_1)
     ));
   }
 
@@ -108,7 +106,14 @@ public class SonarClient {
           .replace("+", "%20");
     } catch (UnsupportedEncodingException e) {
       // We actually use an supported encoding...
-      throw new RuntimeException("This should not have happened");
+      throw new UnreachableCodeException("This should not have happened");
+    }
+  }
+
+  private static class UnreachableCodeException extends RuntimeException {
+    public UnreachableCodeException(
+        String s) {
+      super(s);
     }
   }
 }
