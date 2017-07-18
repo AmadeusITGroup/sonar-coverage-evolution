@@ -3,8 +3,10 @@ package org.sonar.plugins.coverageevolution;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import org.json.simple.Jsoner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.measures.Metric;
+import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 
 public class SonarClient {
@@ -30,14 +33,21 @@ public class SonarClient {
     this.password = password;
   }
 
-  public Double getMeasureValue(Resource resource, Metric<Double> metric) {
-    return getMeasureValueInt(resource, metric).map(Double::valueOf).orElse(null);
+  public Double getMeasureValue(Project module, Resource resource, Metric<Double> metric) {
+    return getMeasureValueInt(module, resource, metric).map(Double::valueOf).orElse(null);
   }
 
-  private <G extends Serializable> Optional<String> getMeasureValueInt(Resource resource, Metric<G> metric) {
+  private <G extends Serializable> Optional<String> getMeasureValueInt(Project module, Resource resource, Metric<G> metric) {
     URL apiUrl = null;
+    String effectiveKey = CoverageUtils.computeEffectiveKey(resource, module);
     try {
-      apiUrl = new URL(url + "/api/measures/component?componentKey=" + resource.getEffectiveKey() + "&metricKeys=" + metric.getKey());
+      apiUrl = new URL(
+          url +
+              "/api/measures/component?" +
+              "componentKey=" + encodeUrlPathComponent(resource.getEffectiveKey()) +
+              "&" +
+              "metricKeys=" + encodeUrlPathComponent(metric.getKey())
+      );
       HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
       connection.setRequestProperty("Accept", "application/json");
       Optional<String> authHeader = makeAuthHeader(login, password);
@@ -90,5 +100,15 @@ public class SonarClient {
     return Optional.of("Basic " + Base64.getEncoder().encodeToString(
         (login + ":" + password).getBytes(StandardCharsets.ISO_8859_1)
     ));
+  }
+
+  protected static String encodeUrlPathComponent(String c) {
+    try {
+      return URLEncoder.encode(c, StandardCharsets.UTF_8.displayName())
+          .replace("+", "%20");
+    } catch (UnsupportedEncodingException e) {
+      // We actually use an supported encoding...
+      throw new RuntimeException("This should not have happened");
+    }
   }
 }

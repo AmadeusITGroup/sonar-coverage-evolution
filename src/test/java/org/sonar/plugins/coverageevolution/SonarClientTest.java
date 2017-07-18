@@ -41,4 +41,12 @@ public class SonarClientTest {
     return (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(name)));
   }
 
+  @Test
+  public void testEncodeUrlPathComponent() {
+    assertEquals(
+        "foo%3Abar%20baz",
+        SonarClient.encodeUrlPathComponent("foo:bar baz")
+    );
+  }
+
 }

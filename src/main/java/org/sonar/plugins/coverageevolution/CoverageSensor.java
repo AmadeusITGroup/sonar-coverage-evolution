@@ -69,7 +69,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
       // get lines_to_cover, uncovered_lines
       if ((linesToCover != null) && (uncoveredLines != null)) {
-        Double previousCoverage = sonar.getMeasureValue(fileResource, CoreMetrics.LINE_COVERAGE);
+        Double previousCoverage = sonar.getMeasureValue(module, fileResource, CoreMetrics.LINE_COVERAGE);
 
         double coverage = calculateCoverage(linesToCover, uncoveredLines);
 
@@ -91,7 +91,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
     // We assume the root module is always the last module, so that the overall data is correct
     if (module.isRoot()) {
-      Double previousProjectCoverage = sonar.getMeasureValue(module, CoreMetrics.LINE_COVERAGE);
+      Double previousProjectCoverage = sonar.getMeasureValue(module, module, CoreMetrics.LINE_COVERAGE);
       Double projectCoverage = coverageProjectStore.getProjectCoverage();
       LOGGER.debug("Previous/current project-wide coverage: {} / {}", previousProjectCoverage,
           projectCoverage);

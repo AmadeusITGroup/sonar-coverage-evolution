@@ -3,9 +3,12 @@ package org.sonar.plugins.coverageevolution;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.resources.Project;
+import org.sonar.api.resources.Resource;
 
 public final class CoverageUtils {
 
@@ -58,5 +61,13 @@ public final class CoverageUtils {
 
   public static boolean roundedPercentageGreaterThan(double left, double right) {
     return (left > right) && !formatPercentage(left).equals(formatPercentage(right));
+  }
+
+  public static String computeEffectiveKey(Resource resource, Project module) {
+    // FIXME resource == module?
+    // do not depend on module.?
+    // use the resource id
+    return Optional.ofNullable(resource.getEffectiveKey())
+        .orElseGet(() -> module.getKey() + ":" + resource.getKey());
   }
 }
