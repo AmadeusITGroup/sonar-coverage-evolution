@@ -44,7 +44,7 @@ public class SonarClient {
       apiUrl = new URL(
           url +
               "/api/measures/component?" +
-              "componentKey=" + encodeUrlPathComponent(resource.getEffectiveKey()) +
+              "componentKey=" + encodeUrlPathComponent(effectiveKey) +
               "&" +
               "metricKeys=" + encodeUrlPathComponent(metric.getKey())
       );
