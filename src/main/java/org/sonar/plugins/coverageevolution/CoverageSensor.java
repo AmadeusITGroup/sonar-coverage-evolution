@@ -34,6 +34,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
   private final CoverageConfiguration config;
   private ActiveRules activeRules;
   private CoverageProjectStore coverageProjectStore;
+  private SonarClient sonar;
 
 
   public CoverageSensor(FileSystem fileSystem, ResourcePerspectives perspectives,
@@ -44,62 +45,69 @@ public class CoverageSensor implements Sensor, BatchComponent {
     this.config = config;
     this.activeRules = activeRules;
     this.coverageProjectStore = coverageProjectStore;
+    this.sonar = new SonarClient(config.url(), config.login(), config.password());
   }
 
   @Override
   public void analyse(Project module, SensorContext context) {
-    SonarClient sonar = new SonarClient(config.url(), config.login(), config.password());
-
-    for (InputFile f : fileSystem.inputFiles(fileSystem.predicates().all())) {
-      Integer linesToCover = null;
-      Integer uncoveredLines = null;
-
-      Resource fileResource = context.getResource(f);
-      Measure<Integer> linesToCoverMeasure = context
-          .getMeasure(fileResource, CoreMetrics.LINES_TO_COVER);
-      if (linesToCoverMeasure != null) {
-        linesToCover = linesToCoverMeasure.value();
-      }
-
-      Measure<Integer> uncoveredLinesMeasure = context
-          .getMeasure(fileResource, CoreMetrics.UNCOVERED_LINES);
-      if (uncoveredLinesMeasure != null) {
-        uncoveredLines = uncoveredLinesMeasure.value();
-      }
-
-      // get lines_to_cover, uncovered_lines
-      if ((linesToCover != null) && (uncoveredLines != null)) {
-        Double previousCoverage = sonar.getMeasureValue(module, fileResource, CoreMetrics.LINE_COVERAGE);
-
-        double coverage = calculateCoverage(linesToCover, uncoveredLines);
-
-        coverageProjectStore.updateMeasurements(linesToCover, uncoveredLines);
-
-        if (previousCoverage == null) {
-          continue;
-        }
-
-        // The API returns the coverage rounded.
-        // So we can only report anything if the rounded value has changed,
-        // otherwise we could report false positives.
-        LOGGER.debug("Previous/current file coverage on: {} / {}",
-            fileResource.getPath(), previousCoverage, coverage);
-        if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
-          addIssue(f, coverage, previousCoverage);
-        }
-      }
+    for (InputFile file : fileSystem.inputFiles(fileSystem.predicates().all())) {
+      analyseFile(module, context, file);
     }
 
     // We assume the root module is always the last module, so that the overall data is correct
     if (module.isRoot()) {
-      Double previousProjectCoverage = sonar.getMeasureValue(module, module, CoreMetrics.LINE_COVERAGE);
-      Double projectCoverage = coverageProjectStore.getProjectCoverage();
-      LOGGER.debug("Previous/current project-wide coverage: {} / {}", previousProjectCoverage,
-          projectCoverage);
-      if (roundedPercentageGreaterThan(previousProjectCoverage, projectCoverage)) {
-        LOGGER.debug("Creating global coverage issue for {}", module);
-        addIssue(module, projectCoverage, previousProjectCoverage);
+      analyseRootProject(module);
+    }
+  }
+
+  private void analyseFile(Project module, SensorContext context, InputFile file) {
+    Integer linesToCover = null;
+    Integer uncoveredLines = null;
+
+    Resource fileResource = context.getResource(file);
+    Measure<Integer> linesToCoverMeasure = context
+        .getMeasure(fileResource, CoreMetrics.LINES_TO_COVER);
+    if (linesToCoverMeasure != null) {
+      linesToCover = linesToCoverMeasure.value();
+    }
+
+    Measure<Integer> uncoveredLinesMeasure = context
+        .getMeasure(fileResource, CoreMetrics.UNCOVERED_LINES);
+    if (uncoveredLinesMeasure != null) {
+      uncoveredLines = uncoveredLinesMeasure.value();
+    }
+
+    // get lines_to_cover, uncovered_lines
+    if ((linesToCover != null) && (uncoveredLines != null)) {
+      Double previousCoverage = sonar.getMeasureValue(module, fileResource, CoreMetrics.LINE_COVERAGE);
+
+      double coverage = calculateCoverage(linesToCover, uncoveredLines);
+
+      coverageProjectStore.updateMeasurements(linesToCover, uncoveredLines);
+
+      if (previousCoverage == null) {
+        return;
       }
+
+      // The API returns the coverage rounded.
+      // So we can only report anything if the rounded value has changed,
+      // otherwise we could report false positives.
+      LOGGER.debug("Previous/current file coverage on: {} / {}",
+          fileResource.getPath(), previousCoverage, coverage);
+      if (roundedPercentageGreaterThan(previousCoverage, coverage)) {
+        addIssue(file, coverage, previousCoverage);
+      }
+    }
+  }
+
+  private void analyseRootProject(Project module) {
+    Double previousProjectCoverage = sonar.getMeasureValue(module, module, CoreMetrics.LINE_COVERAGE);
+    Double projectCoverage = coverageProjectStore.getProjectCoverage();
+    LOGGER.debug("Previous/current project-wide coverage: {} / {}", previousProjectCoverage,
+        projectCoverage);
+    if (roundedPercentageGreaterThan(previousProjectCoverage, projectCoverage)) {
+      LOGGER.debug("Creating global coverage issue for {}", module);
+      addIssue(module, projectCoverage, previousProjectCoverage);
     }
   }
 
