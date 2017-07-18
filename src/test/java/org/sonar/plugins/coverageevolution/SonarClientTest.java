@@ -24,7 +24,7 @@ public class SonarClientTest {
         SonarClient.makeAuthHeader(null, null)
     );
     assertEquals(
-        Optional.of("Basic Zm9v"),
+        Optional.of("Basic Zm9vOg=="),
         SonarClient.makeAuthHeader("foo", null)
     );
   }
