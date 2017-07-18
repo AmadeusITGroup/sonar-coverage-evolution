@@ -8,6 +8,7 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.resources.Project;
+import org.sonar.plugins.coverageevolution.client.SonarClient;
 
 
 public class CoverageSensorTest {
@@ -17,8 +18,9 @@ public class CoverageSensorTest {
   private CoverageConfiguration SPC = mock(CoverageConfiguration.class);
   private ActiveRules AR = mock(ActiveRules.class);
   private CoverageProjectStore CPS = mock(CoverageProjectStore.class);
+  private SonarClient SC = mock(SonarClient.class);
 
-  CoverageSensor CoSe = new CoverageSensor(FS, RP, SPC, AR, CPS);
+  CoverageSensor CoSe = new CoverageSensor(FS, RP, SPC, AR, CPS, SC);
 
 
   public static String formatIssueMessage(String path, double coverage, double previousCoverage) {

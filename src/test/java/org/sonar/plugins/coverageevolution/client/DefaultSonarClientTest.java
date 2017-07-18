@@ -1,4 +1,4 @@
-package org.sonar.plugins.coverageevolution;
+package org.sonar.plugins.coverageevolution.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -11,21 +11,22 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.junit.Test;
 import org.sonar.api.measures.CoreMetrics;
+import org.sonar.plugins.coverageevolution.client.DefaultSonarClient;
 
-public class SonarClientTest {
+public class DefaultSonarClientTest {
   @Test
   public void testMakeAuthHeader() {
     assertEquals(
         Optional.of("Basic Zm9vOmJhcg=="),
-        SonarClient.makeAuthHeader("foo", "bar")
+        DefaultSonarClient.makeAuthHeader("foo", "bar")
     );
     assertEquals(
         Optional.empty(),
-        SonarClient.makeAuthHeader(null, null)
+        DefaultSonarClient.makeAuthHeader(null, null)
     );
     assertEquals(
         Optional.of("Basic Zm9vOg=="),
-        SonarClient.makeAuthHeader("foo", null)
+        DefaultSonarClient.makeAuthHeader("foo", null)
     );
   }
 
@@ -33,12 +34,12 @@ public class SonarClientTest {
   public void testExtractMeasure() throws Exception {
     JsonObject o = readJsonResource("componentMeasure.json");
     assertEquals(
-        SonarClient.extractMeasure(o, CoreMetrics.COMPLEXITY),
+        DefaultSonarClient.extractMeasure(o, CoreMetrics.COMPLEXITY),
         Optional.of("12")
     );
 
     assertEquals(
-        SonarClient.extractMeasure(
+        DefaultSonarClient.extractMeasure(
             (JsonObject) Jsoner.deserialize("{}"),
             CoreMetrics.COMPLEXITY),
         Optional.empty()
@@ -53,7 +54,7 @@ public class SonarClientTest {
   public void testEncodeUrlPathComponent() {
     assertEquals(
         "foo%3Abar%20baz",
-        SonarClient.encodeUrlPathComponent("foo:bar baz")
+        DefaultSonarClient.encodeUrlPathComponent("foo:bar baz")
     );
   }
 
