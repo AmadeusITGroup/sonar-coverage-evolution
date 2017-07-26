@@ -36,6 +36,7 @@ public class DefaultSonarClient implements SonarClient, BatchComponent {
     this.password = config.password();
   }
 
+  @Override
   public Double getMeasureValue(Project module, Resource resource, Metric<Double> metric) {
     return getMeasureValueInt(module, resource, metric).map(Double::valueOf).orElse(null);
   }
@@ -110,14 +111,7 @@ public class DefaultSonarClient implements SonarClient, BatchComponent {
           .replace("+", "%20");
     } catch (UnsupportedEncodingException e) {
       // We actually use an supported encoding...
-      throw new UnreachableCodeException("This should not have happened");
-    }
-  }
-
-  private static class UnreachableCodeException extends RuntimeException {
-    public UnreachableCodeException(
-        String s) {
-      super(s);
+      throw new IllegalStateException("This should not have happened");
     }
   }
 }
