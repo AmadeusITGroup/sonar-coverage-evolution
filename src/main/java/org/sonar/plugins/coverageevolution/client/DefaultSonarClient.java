@@ -16,24 +16,22 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.BatchComponent;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.plugins.coverageevolution.CoverageConfiguration;
 import org.sonar.plugins.coverageevolution.CoverageUtils;
 
-public class DefaultSonarClient implements SonarClient, BatchComponent {
+public class DefaultSonarClient implements SonarClient {
   private String url;
   private String login;
   private String password;
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultSonarClient.class);
 
-  public DefaultSonarClient(CoverageConfiguration config) {
-    this.url = config.url();
-    this.login = config.login();
-    this.password = config.password();
+  public DefaultSonarClient(String url, String login, String password) {
+    this.url = url;
+    this.login = login;
+    this.password = password;
   }
 
   @Override

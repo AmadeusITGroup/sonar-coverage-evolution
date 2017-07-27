@@ -16,7 +16,7 @@ public class CoveragePlugin extends SonarPlugin {
         CoverageProjectStore.class,
         CoverageConfiguration.class,
         SonarClient.class,
-        DefaultSonarClient.class
+        SonarClientComponent.class
     );
   }
 }
