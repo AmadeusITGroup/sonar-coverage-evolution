@@ -25,9 +25,9 @@ public class CoverageRuleTest {
     assertTrue(isDecreasingLineCoverage("coverageEvolution-java:decreasingLineCoverage"));
   }
 
-    private boolean isDecreasingLineCoverage(String s) {
-        return CoverageRule.isDecreasingLineCoverage(RuleKey.parse(s));
-    }
+  private boolean isDecreasingLineCoverage(String s) {
+    return CoverageRule.isDecreasingLineCoverage(RuleKey.parse(s));
+  }
 
 
 }

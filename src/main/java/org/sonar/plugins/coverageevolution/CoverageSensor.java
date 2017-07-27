@@ -141,7 +141,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
     }
     addIssue(issuable,
         formatIssueMessage(file.relativePath(), coverage, previousCoverage),
-        CoverageRule.decreasingLineCoverageRule(file));
+        CoverageRule.decreasingLineCoverageRule(file.language()));
   }
 
   static String formatFileIssueMessage(String path, double coverage, double previousCoverage) {

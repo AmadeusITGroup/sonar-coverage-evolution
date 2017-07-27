@@ -54,16 +54,8 @@ public class CoverageRule implements RulesDefinition {
         .of(repositoryName + "-" + fs.languages().first(), decreasingOverallLineCoverageRule);
   }
 
-  public static RuleKey decreasingLineCoverageRule(InputFile file) {
-    return decreasingLineCoverageRule(file.language());
-  }
-
   public static RuleKey decreasingLineCoverageRule(String language) {
     return RuleKey.of(getRepositoryName(language), decreasingLineCoverageRule);
-  }
-
-  public static boolean isDecreasingLineCoverage(Issue issue) {
-    return isDecreasingLineCoverage(issue.ruleKey());
   }
 
   public static boolean isDecreasingLineCoverage(RuleKey rule) {
