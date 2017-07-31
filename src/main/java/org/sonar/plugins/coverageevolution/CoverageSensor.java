@@ -53,7 +53,7 @@ public class CoverageSensor implements Sensor, BatchComponent {
 
   @Override
   public void analyse(Project module, SensorContext context) {
-    for (InputFile file : fileSystem.inputFiles(fileSystem.predicates().all())) {
+    for (InputFile file : fileSystem.inputFiles(fileSystem.predicates().doesNotMatchPathPatterns(config.coverageExclusions()))) {
       analyseFile(module, context, file);
     }
 

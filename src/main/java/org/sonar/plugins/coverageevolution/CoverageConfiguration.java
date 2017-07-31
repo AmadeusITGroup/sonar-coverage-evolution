@@ -28,4 +28,8 @@ public class CoverageConfiguration implements BatchComponent {
   public boolean scanAllFiles() {
     return settings.getBoolean("sonar.scanAllFiles");
   }
+
+  public String [] coverageExclusions() {
+    return settings.getStringArray(CoreProperties.PROJECT_COVERAGE_EXCLUSIONS_PROPERTY);
+  }
 }

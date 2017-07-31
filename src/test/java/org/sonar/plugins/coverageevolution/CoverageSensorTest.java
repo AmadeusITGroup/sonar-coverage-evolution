@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
+import org.sonar.api.CoreProperties;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -120,6 +121,42 @@ public class CoverageSensorTest {
 
     verify(sonarClient, times(3)).getMeasureValue(any(), any(), any());
     verifyNoMoreInteractions(sonarClient);
+  }
+
+  @Test
+  public void testAnalyseWithExclusions() {
+
+    File fsDir = new File("somepath");
+    fs = new DefaultFileSystem(fsDir);
+
+    InputFile fileA = new DefaultInputFile("a.java").setAbsolutePath("a.java");
+    InputFile fileB = new DefaultInputFile("b.java").setAbsolutePath("b.java");
+
+    fs.add(fileA);
+    fs.add(fileB);
+    fs.addLanguages("java");
+
+    SensorContext context = mock(SensorContext.class);
+    coverageProjectStore = new CoverageProjectStore();
+    sonarClient = mock(SonarClient.class);
+
+    mockFileCoverages(context, sonarClient, fileA, project,
+        100, 60,
+        100, 50
+    );
+
+    mockFileCoverages(context, sonarClient, fileB, project,
+        100, 70,
+        100, 50
+    );
+
+    sensor = new CoverageSensor(fs, rp, config, makeRules(true, false, null), coverageProjectStore, sonarClient);
+    settings.setProperty(CoreProperties.PROJECT_COVERAGE_EXCLUSIONS_PROPERTY, "a.java");
+
+    sensor.analyse(project, context);
+
+    verify(sonarClient, times(2)).getMeasureValue(any(), any(), any());
+
   }
 
   private static void mockFileCoverages(
