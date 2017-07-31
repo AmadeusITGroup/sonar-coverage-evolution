@@ -46,24 +46,6 @@ public class CoverageRuleTest {
   }
 
   @Test
-  public void testDecreasingOverallCoverageRule() {
-    DefaultFileSystem fs = new DefaultFileSystem(null);
-    assertEquals(
-        Optional.empty(),
-        CoverageRule.decreasingOverallLineCoverageRule(fs)
-    );
-
-    fs.addLanguages("java");
-    fs.addLanguages("c");
-    fs.addLanguages("something");
-
-    assertEquals(
-        Optional.of(RuleKey.parse("coverageEvolution-c:decreasingOverallLineCoverage")),
-        CoverageRule.decreasingOverallLineCoverageRule(fs)
-    );
-  }
-
-  @Test
   public void testDefineBasic() {
     Languages languages = new Languages(testLanguage("java"));
     CoverageRule rule = new CoverageRule(languages);
@@ -94,7 +76,7 @@ public class CoverageRuleTest {
   }
 
   @Test
-  public void testMostCommonLanguage() {
+  public void testDecreasingOverallCoverageRule() {
     DefaultFileSystem fs = new DefaultFileSystem(null);
     fs.addLanguages("c", "java", "xml");
 
