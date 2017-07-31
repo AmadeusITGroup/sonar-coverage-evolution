@@ -14,7 +14,7 @@ This SonarQube plugin creates issues if the coverage of a single file or the who
 ## Prerequisites
 - Maven 3.0.5+
 - JDK 1.8+
-- SonarQube 5.x (may work with 4.x, does not yet work with 6.x)
+- SonarQube 5.x or 6.x (may work with 4.x)
 
 ## Usage
 
