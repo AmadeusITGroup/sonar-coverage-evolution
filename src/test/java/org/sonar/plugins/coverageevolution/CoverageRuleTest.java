@@ -3,7 +3,9 @@ package org.sonar.plugins.coverageevolution;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.resources.Language;
 import org.sonar.api.resources.Languages;
@@ -89,6 +91,19 @@ public class CoverageRuleTest {
     RulesDefinition.Context context = new Context();
     rule.define(context);
     assertEquals(2, context.repositories().size());
+  }
+
+  @Test
+  public void testMostCommonLanguage() {
+    DefaultFileSystem fs = new DefaultFileSystem(null);
+    fs.addLanguages("c", "java", "xml");
+
+    fs.add(new DefaultInputFile("a.java").setAbsolutePath("a.java").setLanguage("java").setLines(10));
+    fs.add(new DefaultInputFile("b.java").setAbsolutePath("b.java").setLanguage("java").setLines(15));
+    fs.add(new DefaultInputFile("foo.c").setAbsolutePath("foo.c").setLanguage("c").setLines(20));
+
+    assertEquals("java", CoverageRule.mostCommonLanguage(fs));
+
   }
 
   private static Language testLanguage(String name) {

@@ -1,7 +1,14 @@
 package org.sonar.plugins.coverageevolution;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.resources.Language;
 import org.sonar.api.resources.Languages;
@@ -52,9 +59,38 @@ public class CoverageRule implements RulesDefinition {
     if (fs.languages().isEmpty()) {
       return Optional.empty();
     }
-    // FIXME fs.languages() is ordered by value and not by frequency!?
     return Optional.of(RuleKey.of(
-        repositoryName + "-" + fs.languages().first(), decreasingOverallLineCoverageRule));
+        repositoryName + "-" + mostCommonLanguage(fs), decreasingOverallLineCoverageRule));
+  }
+
+  static String mostCommonLanguage(FileSystem fs) {
+    // we prefer a stable comparator
+    Comparator<Map.Entry<String, Integer>> comparator = new ValueAndKeyComparator<>();
+
+    return StreamSupport.stream(
+        fs.inputFiles(fs.predicates().all()).spliterator(),
+        false
+    ).collect(Collectors.groupingBy(
+        InputFile::language,
+        Collectors.summingInt(InputFile::lines))
+    ).entrySet().stream().filter(
+        Objects::nonNull
+    ).max(
+        comparator
+    ).map(
+        Entry::getKey
+    ).orElse(null);
+  }
+
+  private static class ValueAndKeyComparator<K extends Comparable, V extends Comparable> implements Comparator<Map.Entry<K, V>> {
+    @Override
+    public int compare(Entry<K, V> o1, Entry<K, V> o2) {
+      int res = o1.getValue().compareTo(o2.getValue());
+      if (res != 0) {
+        return res;
+      }
+      return o1.getKey().compareTo(o2.getKey());
+    }
   }
 
   public static RuleKey decreasingLineCoverageRule(String language) {
