@@ -5,6 +5,7 @@ import static org.sonar.plugins.coverageevolution.CoverageUtils.formatPercentage
 import static org.sonar.plugins.coverageevolution.CoverageUtils.roundedPercentageGreaterThan;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.BatchComponent;
@@ -19,6 +20,7 @@ import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
@@ -61,22 +63,22 @@ public class CoverageSensor implements Sensor, BatchComponent {
     }
   }
 
+  private Integer fetchMeasure(SensorContext context, Resource resource, Metric<Integer> metric) {
+    Measure<Integer> measure = context.getMeasure(resource, metric);
+    if (measure != null) {
+      return measure.value();
+    }
+    LOGGER.warn("Could not retrieve measure of {} for {}", metric.getKey(), resource);
+    return null;
+  }
+
   private void analyseFile(Project module, SensorContext context, InputFile file) {
     Integer linesToCover = null;
     Integer uncoveredLines = null;
 
     Resource fileResource = context.getResource(file);
-    Measure<Integer> linesToCoverMeasure = context
-        .getMeasure(fileResource, CoreMetrics.LINES_TO_COVER);
-    if (linesToCoverMeasure != null) {
-      linesToCover = linesToCoverMeasure.value();
-    }
-
-    Measure<Integer> uncoveredLinesMeasure = context
-        .getMeasure(fileResource, CoreMetrics.UNCOVERED_LINES);
-    if (uncoveredLinesMeasure != null) {
-      uncoveredLines = uncoveredLinesMeasure.value();
-    }
+    linesToCover = fetchMeasure(context, fileResource, CoreMetrics.LINES_TO_COVER);
+    uncoveredLines = fetchMeasure(context, fileResource, CoreMetrics.UNCOVERED_LINES);
 
     // get lines_to_cover, uncovered_lines
     if ((linesToCover != null) && (uncoveredLines != null)) {
@@ -127,9 +129,15 @@ public class CoverageSensor implements Sensor, BatchComponent {
           project);
       return;
     }
-    addIssue(issuable,
-        formatIssueMessage("the project", coverage, previousCoverage),
-        CoverageRule.decreasingOverallLineCoverageRule(fileSystem));
+
+    Optional<RuleKey> ruleKey = CoverageRule.decreasingOverallLineCoverageRule(fileSystem);
+    if (ruleKey.isPresent()) {
+      addIssue(issuable,
+          formatIssueMessage("the project", coverage, previousCoverage),
+          ruleKey.get());
+    } else {
+      LOGGER.warn("Could not determine the RuleKey for the project {}", project.getEffectiveKey());
+    }
   }
 
   private void addIssue(InputFile file, double coverage, double previousCoverage) {

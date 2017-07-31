@@ -43,6 +43,24 @@
         ]
       },
       {
+        "metric": "line_coverage",
+        "value": "25",
+        "periods": [
+          {
+            "index": 1,
+            "value": "25"
+          },
+          {
+            "index": 2,
+            "value": "0"
+          },
+          {
+            "index": 3,
+            "value": "25"
+          }
+        ]
+      },
+      {
         "metric": "ncloc",
         "value": "114",
         "periods": [

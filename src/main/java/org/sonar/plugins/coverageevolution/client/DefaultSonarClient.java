@@ -29,7 +29,7 @@ public class DefaultSonarClient implements SonarClient {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultSonarClient.class);
 
   public DefaultSonarClient(String url, String login, String password) {
-    this.url = url;
+    this.url = trimTrailingSlashes(url);
     this.login = login;
     this.password = password;
   }
@@ -101,6 +101,13 @@ public class DefaultSonarClient implements SonarClient {
             login + ":" + (password == null ? "" : password)
         ).getBytes(StandardCharsets.ISO_8859_1)
     ));
+  }
+
+  protected static String trimTrailingSlashes(String input) {
+    if (input.endsWith("/")) {
+      return trimTrailingSlashes(input.substring(0, input.length() - 1));
+    }
+    return input;
   }
 
   protected static String encodeUrlPathComponent(String c) {

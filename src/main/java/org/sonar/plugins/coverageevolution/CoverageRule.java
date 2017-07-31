@@ -1,9 +1,8 @@
 package org.sonar.plugins.coverageevolution;
 
+import java.util.Optional;
 import org.sonar.api.batch.fs.FileSystem;
-import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRules;
-import org.sonar.api.issue.Issue;
 import org.sonar.api.resources.Language;
 import org.sonar.api.resources.Languages;
 import org.sonar.api.rule.RuleKey;
@@ -49,20 +48,20 @@ public class CoverageRule implements RulesDefinition {
     }
   }
 
-  public static RuleKey decreasingOverallLineCoverageRule(FileSystem fs) {
-    return RuleKey
-        .of(repositoryName + "-" + fs.languages().first(), decreasingOverallLineCoverageRule);
+  public static Optional<RuleKey> decreasingOverallLineCoverageRule(FileSystem fs) {
+    if (fs.languages().isEmpty()) {
+      return Optional.empty();
+    }
+    // FIXME fs.languages() is ordered by value and not by frequency!?
+    return Optional.of(RuleKey.of(
+        repositoryName + "-" + fs.languages().first(), decreasingOverallLineCoverageRule));
   }
 
   public static RuleKey decreasingLineCoverageRule(String language) {
     return RuleKey.of(getRepositoryName(language), decreasingLineCoverageRule);
   }
 
-  public static boolean isDecreasingLineCoverage(RuleKey rule) {
-    return isOurRepository(rule) && decreasingLineCoverageRule.equals(rule.rule());
-  }
-
-  public static boolean isOurRepository(RuleKey rule) {
+  private static boolean isOurRepository(RuleKey rule) {
     return rule.repository().startsWith(repositoryName + "-");
   }
 
