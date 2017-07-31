@@ -42,6 +42,7 @@
     <sonar.coverage.exclusions>
 	    src/main/java/org/sonar/plugins/coverageevolution/CoveragePlugin.java,
 	    src/main/java/org/sonar/plugins/coverageevolution/CoverageConfiguration.java,
+	    src/main/java/org/sonar/plugins/coverageevolution/SonarClientComponent.java,
     </sonar.coverage.exclusions>
   </properties>
 
