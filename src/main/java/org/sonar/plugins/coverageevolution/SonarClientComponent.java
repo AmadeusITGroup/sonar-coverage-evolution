@@ -1,12 +1,13 @@
 package org.sonar.plugins.coverageevolution;
 
+import org.sonar.api.BatchComponent;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.coverageevolution.client.DefaultSonarClient;
 import org.sonar.plugins.coverageevolution.client.SonarClient;
 
-public class SonarClientComponent implements SonarClient {
+public class SonarClientComponent implements SonarClient, BatchComponent {
   private SonarClient client;
 
   public SonarClientComponent(CoverageConfiguration config) {
