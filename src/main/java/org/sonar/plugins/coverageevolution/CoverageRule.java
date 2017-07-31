@@ -70,7 +70,7 @@ public class CoverageRule implements RulesDefinition {
     return StreamSupport.stream(
         fs.inputFiles(fs.predicates().all()).spliterator(),
         false
-    ).filter((f) ->
+    ).filter(f ->
         f != null && f.language() != null
     ).collect(Collectors.groupingBy(
         InputFile::language,
