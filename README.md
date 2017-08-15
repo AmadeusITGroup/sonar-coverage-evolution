@@ -21,3 +21,10 @@ This SonarQube plugin creates issues if the coverage of a single file or the who
 The plugin only works in SonarQube `preview` mode.
 To enable the functionality enable the relevant rules in the used Quality Gate.
 The rules belong to the `coverageEvolution-$LANGUAGE` rule repository.
+
+## Caveats
+
+* This plugin uses old, deprecated APIs and may stop working in future
+  SonarQube versions.
+* The plugin always compares the current coverage to the latest coverage
+  reported to SonarQube, which may not be the actual target of the pullrequest.
