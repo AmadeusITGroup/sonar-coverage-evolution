@@ -3,12 +3,16 @@ package org.sonar.plugins.coverageevolution;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 
 public final class CoverageUtils {
-
+ 
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoverageUtils.class); 
+	
   public static final int MAX_PERCENTAGE = 100;
 
   private CoverageUtils() {}
@@ -44,7 +48,20 @@ public final class CoverageUtils {
   // It is still provided for modules, which makes the following code work for files and modules
   // for both SQ 5.x and 6.x
   public static String computeEffectiveKey(Resource resource, Project module) {
-    return Optional.ofNullable(resource.getEffectiveKey())
-        .orElseGet(() -> module.getKey() + ":" + resource.getKey());
+    LOGGER.debug("Resource effectiveKey = {}, resource key = {}, module key = {}, module branch = {}",
+        resource.getEffectiveKey(), resource.getKey(), module.getKey(), module.getBranch());
+	  
+  
+	String effectiveKey = resource.getEffectiveKey();
+	if (effectiveKey == null) {
+		effectiveKey = module.getKey() + ":"; 
+        if (module.getBranch() != null && !"".equals(module.getBranch())) {
+        	effectiveKey += module.getBranch() + ":";
+        }
+        effectiveKey += resource.getKey(); 
+	}
+	
+	LOGGER.debug("Resulted effective key = {}", effectiveKey);
+    return effectiveKey;
   }
 }
