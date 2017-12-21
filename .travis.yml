@@ -26,6 +26,7 @@ addons:
 
 script:
   - ./.travis/runSonarQubeAnalysis.sh
+  - ./.travis/script.sh
 
 notifications:
   email: false

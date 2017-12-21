@@ -110,6 +110,15 @@
           <pushChanges>false</pushChanges>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+          <skipProvidedScope>true</skipProvidedScope>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
