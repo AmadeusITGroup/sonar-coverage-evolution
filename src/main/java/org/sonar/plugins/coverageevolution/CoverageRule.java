@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -26,6 +28,8 @@ public class CoverageRule implements RulesDefinition {
   public CoverageRule(Languages languages) {
     this.languages = languages;
   }
+
+  private static Logger LOGGER = LoggerFactory.getLogger(CoverageRule.class);
 
   private static String getRepositoryName(String language) {
     return repositoryName + "-" + language;
@@ -57,13 +61,23 @@ public class CoverageRule implements RulesDefinition {
 
   public static Optional<RuleKey> decreasingOverallLineCoverageRule(FileSystem fs) {
     if (fs.languages().isEmpty()) {
+      LOGGER.warn("The project does not contain any languages, skipping overall coverage issue");
       return Optional.empty();
     }
+
+    Optional<String> language = mostCommonLanguage(fs);
+
+    if (!language.isPresent()) {
+      LOGGER.warn("Could not detect the language of the project, skipping overall coverage issue");
+      return Optional.empty();
+    }
+
+    LOGGER.info("Using language \"{}\" for the project wide coverage", language.get());
     return Optional.of(RuleKey.of(
-        repositoryName + "-" + mostCommonLanguage(fs), decreasingOverallLineCoverageRule));
+        repositoryName + "-" + language.get(), decreasingOverallLineCoverageRule));
   }
 
-  static String mostCommonLanguage(FileSystem fs) {
+  static Optional<String> mostCommonLanguage(FileSystem fs) {
     // we prefer a stable comparator
     Comparator<Map.Entry<String, Integer>> comparator = new ValueAndKeyComparator<>();
 
@@ -81,7 +95,7 @@ public class CoverageRule implements RulesDefinition {
         comparator
     ).map(
         Entry::getKey
-    ).orElse(null);
+    );
   }
 
   private static class ValueAndKeyComparator<K extends Comparable, V extends Comparable> implements Comparator<Map.Entry<K, V>> {
