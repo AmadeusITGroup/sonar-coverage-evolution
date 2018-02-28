@@ -2,4 +2,4 @@
 
 set -e
 
-mvn -e mvn org.owasp:dependency-check-maven:check
+mvn -e org.owasp:dependency-check-maven:check
