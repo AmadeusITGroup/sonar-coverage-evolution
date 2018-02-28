@@ -19,7 +19,7 @@ import org.sonar.api.rule.Severity;
 import org.sonar.api.server.rule.RulesDefinition;
 
 public class CoverageRule implements RulesDefinition {
-  private final static Logger LOGGER = LoggerFactory.getLogger(CoverageRule.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoverageRule.class);
 
   private Languages languages;
   private static String repositoryName = "coverageEvolution";
