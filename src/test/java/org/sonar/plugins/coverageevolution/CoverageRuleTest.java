@@ -84,7 +84,7 @@ public class CoverageRuleTest {
     fs.add(new DefaultInputFile("b.java").setAbsolutePath("b.java").setLanguage("java").setLines(15));
     fs.add(new DefaultInputFile("foo.c").setAbsolutePath("foo.c").setLanguage("c").setLines(20));
 
-    assertEquals("java", CoverageRule.mostCommonLanguage(fs));
+    assertEquals(Optional.of("java"), CoverageRule.mostCommonLanguage(fs));
 
   }
 

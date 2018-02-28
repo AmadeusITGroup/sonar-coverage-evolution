@@ -88,8 +88,8 @@ public class CoverageSensorTest {
     File fsDir = new File("somepath");
     fs = new DefaultFileSystem(fsDir);
 
-    InputFile fileA = new DefaultInputFile("a.java").setAbsolutePath("a.java");
-    InputFile fileB = new DefaultInputFile("b.java").setAbsolutePath("b.java");
+    InputFile fileA = new DefaultInputFile("a.java").setAbsolutePath("a.java").setLanguage("java");
+    InputFile fileB = new DefaultInputFile("b.java").setAbsolutePath("b.java").setLanguage("java");
 
     fs.add(fileA);
     fs.add(fileB);
@@ -129,9 +129,8 @@ public class CoverageSensorTest {
     File fsDir = new File("somepath");
     fs = new DefaultFileSystem(fsDir);
 
-    InputFile fileA = new DefaultInputFile("a.java").setAbsolutePath("a.java");
-    InputFile fileB = new DefaultInputFile("b.java").setAbsolutePath("b.java");
-
+    InputFile fileA = new DefaultInputFile("a.java").setAbsolutePath("a.java").setLanguage("java");
+    InputFile fileB = new DefaultInputFile("b.java").setAbsolutePath("b.java").setLanguage("java");
     fs.add(fileA);
     fs.add(fileB);
     fs.addLanguages("java");
