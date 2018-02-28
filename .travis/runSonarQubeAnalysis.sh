@@ -20,12 +20,12 @@ fi
 
 # And run the analysis
 # It assumes that the project uses Maven and has a POM at the root of the repo
-if [ "${TRAVIS_BRANCH}" = "master" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 	# => This will run a full analysis of the project and push results to the SonarQube server.
 	#
 	# Analysis is done only on master so that build of branches don't push analyses to the same project and therefore "pollute" the results
 	echo "Starting analysis by SonarQube..."
-	mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -B -e -V -Dmaven.javadoc.skip=true
+	mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -B -e -V -Dmaven.javadoc.skip=true -Dsonar.branch.name=$TRAVIS_BRANCH
 
 elif [ "${TRAVIS_PULL_REQUEST}" != "false" ] && [ -n "${GITHUB_TOKEN-}" ]; then
 	# => This will analyse the PR and display found issues as comments in the PR, but it won't push results to the SonarQube server
