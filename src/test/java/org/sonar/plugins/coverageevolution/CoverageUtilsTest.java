@@ -1,16 +1,16 @@
 package org.sonar.plugins.coverageevolution;
 
-import org.junit.Test;
-import org.sonar.api.resources.File;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.sonar.plugins.coverageevolution.CoverageUtils.calculateCoverage;
 import static org.sonar.plugins.coverageevolution.CoverageUtils.computeEffectiveKey;
 import static org.sonar.plugins.coverageevolution.CoverageUtils.roundedPercentageGreaterThan;
+
+import org.junit.Test;
+import org.sonar.api.resources.File;
+import org.sonar.api.resources.Project;
+import org.sonar.api.resources.Resource;
 
 public class CoverageUtilsTest {
 
@@ -58,6 +58,18 @@ public class CoverageUtilsTest {
     r.setEffectiveKey("quux");
     assertEquals(
         "quux",
+        computeEffectiveKey(r, module)
+    );
+  }
+  
+  @Test
+  public void testComputeEffectiveKeyWithBranch() {
+    Project module = new Project("foo:bar");
+	module.setBranch("branch");
+	
+	Resource r = File.create("xyz");
+    assertEquals(
+        "foo:bar:branch:xyz",
         computeEffectiveKey(r, module)
     );
   }
